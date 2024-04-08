@@ -60,7 +60,7 @@ def median_iqr_normalize(explanation_tensor, eps=1e-25):
     >>> explanation = torch.randn(1, 3, 64, 64)  # Input explanation tensor
     >>> normalized_explanation = median_iqr_normalize(explanation)
     """
-    explanation_tensor = explanation_tensor.squeeze(0)
+    # explanation_tensor = explanation_tensor.squeeze(0) # ***quit --> when is this desired? 
     median = torch.tensor(np.median(explanation_tensor, axis=[1, 2, 3])).unsqueeze(1).unsqueeze(1).unsqueeze(1)
     q_25 = torch.tensor(np.quantile(explanation_tensor, q=0.25, axis=[1, 2, 3])).unsqueeze(1).unsqueeze(1).unsqueeze(1)
     q_75 = torch.tensor(np.quantile(explanation_tensor, q=0.75, axis=[1, 2, 3])).unsqueeze(1).unsqueeze(1).unsqueeze(1)
@@ -95,6 +95,17 @@ def second_moment_normalize(explanation_tensor, eps=1e-25):
     >>> explanation = torch.randn(1, 3, 64, 64)  # Input explanation tensor
     >>> normalized_explanation = second_moment_normalize(explanation)
     """
+    
+    
+    # # Compute the standard deviation over the width and height dimensions
+    # std = torch.std(explanation_tensor, dim=(2, 3), keepdim=True)
+    # # Compute the mean of the standard deviations across the channel dimension
+    # mean_std = torch.mean(std, dim=1, keepdim=True)
+    # # Normalize the explanation tensor
+    # normalized_tensor = explanation_tensor / (mean_std + eps)
+    # return normalized_tensor
+
+    # ***old
     std = torch.std(explanation_tensor, dim=[3, 4], keepdim=True)
     mean_std = torch.mean(std, dim=2, keepdim=True)
     normalized_tensor = explanation_tensor / (mean_std + eps)
